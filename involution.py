@@ -64,10 +64,11 @@ def search(G):
             cur = loc[i]
             # 停留
             max_loc = cur
-            max_prof = (level[i][cur] + a[i] * f(T[i][cur] + 1)) / total_level[cur]
-            neighbors = np.nonzero(G[cur])
+            max_prof = (level[i][cur] + a[i] * f(T[i][cur] + 1)) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
+            neighbors = np.nonzero(G[cur])[0]
             for j in range(len(neighbors)):
-                prof = (level[i][j] + a[i] * f(T[i][j] + 1)) / total_level[j]
+                cur = neighbors[j]
+                prof = (level[i][cur] + a[i] * f(T[i][cur] + 1)) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
                 if prof > max_prof:
                     max_prof = prof
                     max_loc = j
