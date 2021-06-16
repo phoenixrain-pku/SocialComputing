@@ -48,7 +48,7 @@ def search(G):
         # 首先计算每个节点的总水平
         total_level = np.sum(level, axis=0)
         for i in range(m):
-            temp = np.divide(level[i], total_level, out=np.zeros_like(total_level, dtype=np.float64), where=total_level != 0)
+            temp = np.divide(level[i] ** 2, total_level, out=np.zeros_like(total_level, dtype=np.float64), where=total_level != 0)
             profit.append(np.sum(temp))
         if iter == 0:
             with open("total_profit.csv", "w") as csvfile:
