@@ -41,7 +41,7 @@ def search(G):
         for i in range(m):
             # 当前时刻T=1,2,...
             T[i][loc[i]] += 1   # 在当前位置的时间+1
-            level[i][loc[i]] += a[i] * f(T[i][loc[i]])
+            level[i][loc[i]] += a[i] * f(T[i][loc[i]]) * f(T[i][loc[i]])
 
         # 用更新后的水平值更新真实收益
         profit = []
