@@ -58,7 +58,7 @@ def search(G):
     iter = 0
     file_name='m'+str(m)+'n'+str(n)+'p'+str(p)+'round'+str(max_iter)+'.csv'
     while True:
-        print('round',iter+1,":",n)
+        print('round',iter+1,":",n,"    ",loc[0])
         # 先更新累计时间和水平值
         for i in range(m):
             # 当前时刻T=1,2,...
@@ -95,16 +95,21 @@ def search(G):
             cur = loc[i]
             # 停留
             max_loc = cur
-            max_prof = (level[i][cur] + a[i] * f(T[i][cur] + 1)) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
+            max_net_earning=a[i] * f(T[i][cur] + 1)
+            max_prof = (level[i][cur] + max_net_earning) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
+            
             # neighbors = np.nonzero(G[cur])[0]
             neighbors = G[cur]
             for j in range(len(neighbors)):
                 cur = neighbors[j]
-                prof = (level[i][cur] + a[i] * f(T[i][cur] + 1)) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
-                if prof > max_prof:
+                net_earning=a[i] * f(T[i][cur] + 1)
+                prof = (level[i][cur] + net_earning) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
+                if prof > max_prof or (prof==max_prof and net_earning>max_net_earning):
                     max_prof = prof
                     max_loc = j
+                    max_net_earning=net_earning
             loc[i] = max_loc
+            print(max_net_earning)
 
         iter += 1
         if iter >= max_iter:
