@@ -4,10 +4,8 @@ eachtime = []
 for i in range(100):
     datas = f.readline()
     data = datas.split(',')
-    print(data)
     data = [float(i) for i in data]
     eachtime.append(sum(data))
-print(eachtime)
 MA10 = []
 
 for i in range(10,len(eachtime)):

@@ -7,7 +7,7 @@ from copy import deepcopy
 
 
 np.random.seed(2021)
-m, n = 300, 100  # m个人，n个资源点
+m, n = 1, 100  # m个人，n个资源点
 num_m = list(range(m))
 num_n = list(range(n))
 zero_n = dict(zip(num_n, np.zeros(n)))
@@ -20,7 +20,7 @@ level = dict.fromkeys(range(m), zero_n.copy())  # 每个人在节点上的个人
 loc = np.random.randint(n, size=m)  # 每个人的出生点
 loc = dict(zip(num_m, loc))
 
-p=1
+p=0.05
 
 
 def init_G(G):
@@ -40,7 +40,8 @@ def init_G(G):
             G[list[j]] = temp.copy()
 
             # 这样不行
-            # G[i].append(list[j])
+            #G[i].append(list[j])
+            #G[list[j]].append(i)
     return G
 
 
@@ -53,10 +54,11 @@ def search(G):
     global level
     global T
     global loc
-    max_iter = 10
+    max_iter = 100
     iter = 0
+    file_name='m'+str(m)+'n'+str(n)+'p'+str(p)+'round'+str(max_iter)+'.csv'
     while True:
-        print('round',iter)
+        print('round',iter+1,":",n)
         # 先更新累计时间和水平值
         for i in range(m):
             # 当前时刻T=1,2,...
@@ -80,11 +82,11 @@ def search(G):
             temp = np.divide(k ** 2, total_level, out=np.zeros_like(total_level, dtype=np.float64), where=total_level != 0)
             profit.append(np.sum(temp))
         if iter == 0:
-            with open("total_profit.csv", "w", newline='') as csvfile:
+            with open(file_name, "w", newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(profit)
         else:
-            with open("total_profit.csv", "a+", newline='') as csvfile:
+            with open(file_name, "a+", newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 writer.writerow(profit)
 
@@ -104,11 +106,12 @@ def search(G):
                     max_loc = j
             loc[i] = max_loc
 
-        add_node()
-
         iter += 1
         if iter >= max_iter:
             return
+
+        add_node()
+
 
 def add_node():
     global n,G
@@ -119,6 +122,18 @@ def add_node():
             G[n]=[]
             G[n].append(i)
             G[i].append(n)
+            e = np.random.randint(2, 16)  # 可以生成2-15条边
+            list = random.sample(range(n), e)
+            for j in range(e):
+                if i == list[j] or n==list[j]:
+                    continue
+                temp = G[n].copy()
+                temp.append(list[j])
+                G[n] = temp.copy()
+
+                temp = G[list[j]].copy()
+                temp.append(n)
+                G[list[j]] = temp.copy()
             for j in range(m):
                 T[j][n]=0
                 level[j][n]=0
