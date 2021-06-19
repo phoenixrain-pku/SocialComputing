@@ -7,7 +7,7 @@ from copy import deepcopy
 
 
 np.random.seed(2021)
-m, n = 1, 100  # m个人，n个资源点
+m, n = 100, 100  # m个人，n个资源点
 num_m = list(range(m))
 num_n = list(range(n))
 zero_n = dict(zip(num_n, np.zeros(n)))
@@ -20,7 +20,7 @@ level = dict.fromkeys(range(m), zero_n.copy())  # 每个人在节点上的个人
 loc = np.random.randint(n, size=m)  # 每个人的出生点
 loc = dict(zip(num_m, loc))
 
-p=0.05
+p=0
 
 
 def init_G(G):
@@ -58,7 +58,7 @@ def search(G):
     iter = 0
     file_name='m'+str(m)+'n'+str(n)+'p'+str(p)+'round'+str(max_iter)+'.csv'
     while True:
-        print('round',iter+1,":",n,"    ",loc[0])
+        print('round',iter+1,":",n)
         # 先更新累计时间和水平值
         for i in range(m):
             # 当前时刻T=1,2,...
@@ -106,10 +106,9 @@ def search(G):
                 prof = (level[i][cur] + net_earning) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
                 if prof > max_prof or (prof==max_prof and net_earning>max_net_earning):
                     max_prof = prof
-                    max_loc = j
+                    max_loc = cur
                     max_net_earning=net_earning
             loc[i] = max_loc
-            print(max_net_earning)
 
         iter += 1
         if iter >= max_iter:
