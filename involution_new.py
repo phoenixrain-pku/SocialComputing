@@ -1,4 +1,3 @@
-from os import O_SHORT_LIVED
 import numpy as np
 import random
 import math
@@ -20,7 +19,7 @@ level = dict.fromkeys(range(m), zero_n.copy())  # 每个人在节点上的个人
 loc = np.random.randint(n, size=m)  # 每个人的出生点
 loc = dict(zip(num_m, loc))
 
-p=0
+p=0.001
 
 
 def init_G(G):
@@ -54,7 +53,7 @@ def search(G):
     global level
     global T
     global loc
-    max_iter = 100
+    max_iter = 500
     iter = 0
     file_name='m'+str(m)+'n'+str(n)+'p'+str(p)+'round'+str(max_iter)+'.csv'
     while True:
