@@ -6,7 +6,7 @@ from copy import deepcopy
 
 
 np.random.seed(2021)
-m, n = 100, 100  # m个人，n个资源点
+m, n = 300, 100  # m个人，n个资源点
 num_m = list(range(m))
 num_n = list(range(n))
 zero_n = dict(zip(num_n, np.zeros(n)))
@@ -18,6 +18,9 @@ T = dict.fromkeys(range(m), zero_n.copy())  # 每个人在每个节点上的时�
 level = dict.fromkeys(range(m), zero_n.copy())  # 每个人在节点上的个人水平值
 loc = np.random.randint(n, size=m)  # 每个人的出生点
 loc = dict(zip(num_m, loc))
+person_num=dict(zip(num_n, np.zeros(n)))
+for i in range(m):
+    person_num[loc[i]]+=1
 
 p=0.001
 
@@ -93,6 +96,7 @@ def search(G):
         for i in range(m):
             cur = loc[i]
             # 停留
+            person_num[loc[i]]-=1
             max_loc = cur
             max_net_earning=a[i] * f(T[i][cur] + 1)
             max_prof = (level[i][cur] + max_net_earning) / (total_level[cur] + a[i] * f(T[i][cur] + 1))
@@ -108,9 +112,22 @@ def search(G):
                     max_loc = cur
                     max_net_earning=net_earning
             loc[i] = max_loc
+            person_num[loc[i]]+=1
 
         iter += 1
         if iter >= max_iter:
+            wrote=False
+            for i in range(n):
+                if person_num[i] != 0:
+                    if not wrote:
+                        with open('node_result.csv','w',newline='') as csvfile:
+                            writer=csv.writer(csvfile)
+                            writer.writerow([i+1,person_num[i]])
+                        wrote=True
+                    else:
+                         with open('node_result.csv','a+',newline='') as csvfile:
+                            writer=csv.writer(csvfile)
+                            writer.writerow([i+1,person_num[i]])
             return
 
         add_node()
@@ -137,6 +154,8 @@ def add_node():
                 temp = G[list[j]].copy()
                 temp.append(n)
                 G[list[j]] = temp.copy()
+
+                person_num[n]=0
             for j in range(m):
                 T[j][n]=0
                 level[j][n]=0
